@@ -1,22 +1,98 @@
-# 🕹️ Tic Tac Toe
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Tic Tac Toe</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      margin: 20px auto;
+    }
+    td {
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 24px;
+      border: 1px solid black;
+      cursor: pointer;
+    }
+    #status {
+      text-align: center;
+      font-size: 20px;
+    }
+    #reset {
+      display: block;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
 
-A simple web-based Tic Tac Toe game built with HTML, CSS, and JavaScript. Play against a friend in a classic 3x3 grid!
+<h2 id="status">Player X's Turn</h2>
+<table>
+  <tr>
+    <td onclick="makeMove(this, 0)"></td>
+    <td onclick="makeMove(this, 1)"></td>
+    <td onclick="makeMove(this, 2)"></td>
+  </tr>
+  <tr>
+    <td onclick="makeMove(this, 3)"></td>
+    <td onclick="makeMove(this, 4)"></td>
+    <td onclick="makeMove(this, 5)"></td>
+  </tr>
+  <tr>
+    <td onclick="makeMove(this, 6)"></td>
+    <td onclick="makeMove(this, 7)"></td>
+    <td onclick="makeMove(this, 8)"></td>
+  </tr>
+</table>
+<button id="reset" onclick="resetGame()">Restart</button>
 
-## 🚀 Features
+<script>
+  let board = ["", "", "", "", "", "", "", "", ""];
+  let currentPlayer = "X";
+  let gameActive = true;
 
-- Interactive 3x3 game board
-- Two-player gameplay (Player X and Player O)
-- Win and draw detection
-- Restart button to reset the game
-- Responsive and minimal UI
+  function makeMove(cell, index) {
+    if (!gameActive || board[index] !== "") return;
 
-## 📸 Preview
+    board[index] = currentPlayer;
+    cell.textContent = currentPlayer;
 
-![Tic Tac Toe Screenshot](screenshot.png) <!-- Add a screenshot file to your repo -->
+    if (checkWinner()) {
+      document.getElementById("status").textContent = "Player " + currentPlayer + " wins!";
+      gameActive = false;
+    } else if (board.every(cell => cell !== "")) {
+      document.getElementById("status").textContent = "It's a draw!";
+      gameActive = false;
+    } else {
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      document.getElementById("status").textContent = "Player " + currentPlayer + "'s Turn";
+    }
+  }
 
-## 🛠️ How to Run Locally
+  function checkWinner() {
+    const winPatterns = [
+      [0,1,2],[3,4,5],[6,7,8], // rows
+      [0,3,6],[1,4,7],[2,5,8], // columns
+      [0,4,8],[2,4,6]          // diagonals
+    ];
+    return winPatterns.some(pattern => 
+      pattern.every(index => board[index] === currentPlayer)
+    );
+  }
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/tic-tac-toe.git
-   cd tic-tac-toe
+  function resetGame() {
+    board = ["", "", "", "", "", "", "", "", ""];
+    currentPlayer = "X";
+    gameActive = true;
+    document.getElementById("status").textContent = "Player X's Turn";
+    const cells = document.getElementsByTagName("td");
+    for (let cell of cells) {
+      cell.textContent = "";
+    }
+  }
+</script>
+
+</body>
+</html>
